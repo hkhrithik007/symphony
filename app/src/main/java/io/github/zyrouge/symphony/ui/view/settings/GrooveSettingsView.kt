@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FindInPage
+import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.RuleFolder
@@ -295,6 +296,19 @@ fun GrooveSettingsView(context: ViewContext, route: GrooveSettingsViewRoute) {
                         value = useMetaphony,
                         onChange = { value ->
                             context.symphony.settings.useMetaphony.setValue(value)
+                        }
+                    )
+                    HorizontalDivider()
+                    SettingsSwitchTile(
+                        icon = {
+                            Icon(Icons.Filled.Headset, null)
+                        },
+                        title = {
+                            Text("Exclusive USB Audio Mode (Android 13+)")
+                        },
+                        value = context.symphony.settings.exclusiveUsbMode.value,
+                        onChange = { value ->
+                            context.symphony.settings.exclusiveUsbMode.setValue(value)
                         }
                     )
                     HorizontalDivider()

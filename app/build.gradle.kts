@@ -23,8 +23,15 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86"))
+        }
     }
-
+    //externalNativeBuild {
+      //  cmake {
+       //     path = file("src/main/cpp/CMakeLists.txt")
+        //}
+    //}
     signingConfigs {
         register("release") {
             storeFile = System.getenv("SIGNING_KEYSTORE_FILE")?.let { rootProject.file(it) }
@@ -124,6 +131,8 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
+    implementation("androidx.media3:media3-exoplayer:1.5.0")
+    implementation("androidx.media3:media3-ui:1.5.0")
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)

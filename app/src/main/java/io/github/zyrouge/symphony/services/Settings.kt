@@ -289,7 +289,7 @@ class Settings(private val symphony: Symphony) {
     val nowPlayingAdditionalInfo = BooleanEntry("show_now_playing_additional_info", true)
     val nowPlayingSeekControls = BooleanEntry("enable_seek_controls", false)
     val seekBackDuration = IntEntry("seek_back_duration", 15)
-    val seekForwardDuration = IntEntry("seek_back_duration", 30)
+    val seekForwardDuration = IntEntry("seek_forward_duration", 30)
     val miniPlayerTrackControls = BooleanEntry("mini_player_extended_controls", false)
     val miniPlayerSeekControls = BooleanEntry("mini_player_seek_controls", false)
     val fontFamily = NullableStringEntry("font_family")
@@ -329,6 +329,7 @@ class Settings(private val symphony: Symphony) {
     val gaplessPlayback = BooleanEntry("gapless_playback", true)
     val caseSensitiveSorting = BooleanEntry("case_sensitive_sorting", false)
     val lyricsKeepScreenAwake = BooleanEntry("lyrics_keep_screen_awake", true)
+    val exclusiveUsbMode = BooleanEntry("exclusive_usb_mode", false)
 
     private fun getSharedPreferences() = symphony.applicationContext
         .getSharedPreferences("settings", Context.MODE_PRIVATE)

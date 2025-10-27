@@ -1,9 +1,13 @@
 package io.github.zyrouge.symphony.services.radio
 
+import android.content.Context
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
 import io.github.zyrouge.symphony.Symphony
+import io.github.zyrouge.symphony.services.audio.UsbAudioManager
 import io.github.zyrouge.symphony.utils.Logger
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -70,6 +74,33 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
 
     init {
         unsafeMediaPlayer = MediaPlayer().also { ump ->
+            // Configure USB audio if exclusive mode is enabled
+            if (symphony.settings.exclusiveUsbMode.value) {
+                try {
+                    val usbAudioManager = UsbAudioManager(symphony.applicationContext)
+
+                    if (usbAudioManager.isUsbDacConnected()) {
+                        val audioManager = symphony.applicationContext
+                            .getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+                        // Find and set USB audio device
+                        val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+                        val usbDevice = devices.find { device ->
+                            device.type == AudioDeviceInfo.TYPE_USB_DEVICE ||
+                                    device.type == AudioDeviceInfo.TYPE_USB_HEADSET
+                        }
+
+                        if (usbDevice != null) {
+                            ump.setPreferredDevice(usbDevice)
+                            val deviceName = usbDevice.productName?.toString() ?: "USB Device"
+                            //Logger.info("RadioPlayer", "Exclusive USB mode: routing to $deviceName")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Logger.error("RadioPlayer", "Failed to configure USB audio", e)
+                }
+            }
+
             ump.setOnPreparedListener {
                 state = State.Prepared
                 ump.playbackParams.setAudioFallbackMode(PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT)

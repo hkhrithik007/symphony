@@ -10,9 +10,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import io.github.zyrouge.symphony.ui.view.BaseView
 import io.github.zyrouge.symphony.utils.Logger
+import io.github.zyrouge.symphony.usb.UsbAudioManager
 
 class MainActivity : ComponentActivity() {
     private var gSymphony: Symphony? = null
+    private lateinit var usbAudioManager: UsbAudioManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,10 @@ class MainActivity : ComponentActivity() {
         symphony.emitActivityReady()
         attachHandlers()
 
+        // Initialize USB Audio Manager
+        usbAudioManager = UsbAudioManager(this)
+        usbAudioManager.initialize()
+
         enableEdgeToEdge()
         setContent {
             LaunchedEffect(LocalContext.current) {
@@ -53,6 +59,8 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         gSymphony?.emitActivityDestroy()
+        // Cleanup USB Audio Manager
+        usbAudioManager.cleanup()
     }
 
     private fun attachHandlers() {
